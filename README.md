@@ -1,2 +1,2 @@
-# Maria Vermathen's projects archive
-A personal projects archive 
+# Maria Vermathen's project archive
+A personal project archive
