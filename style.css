@@ -5,10 +5,8 @@ body{
     background-color: black;
     color: white;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-    margin-left: 200px;
-    margin-right: 220px;
-    margin-top: 60px;
-    margin-bottom: 100px;
+    max-width: 900px;
+    margin: 60px auto 100px auto;
 }
 h1{
     font-family:'britannic', Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
@@ -36,4 +34,181 @@ td{
 }
 ul{
     font-size: large;
+}
+
+@media (max-width: 768px) {
+    body {
+        margin: 20px;
+        max-width: none;
+    }
+
+    h1 {font-size: 200%; }
+    h2 {font-size: 150%; }
+}
+
+/* ============================= */
+/* Sesotho Phrase Builder        */
+/* ============================= */
+
+.builder-section {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #444;
+}
+
+.builder-section input,
+.builder-section select,
+.builder-section button {
+    display: block;
+    margin: 0.4rem 0;
+    padding: 0.4rem;
+    background-color: black;
+    color: white;
+    border: 1px solid #666;
+    font-size: 1rem;
+}
+
+.builder-section button {
+    cursor: pointer;
+}
+
+.conditional {
+    display: none;
+}
+
+#output {
+    margin-top: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* ============================= */
+/* Phrase blocks                 */
+/* ============================= */
+
+.blocks {
+  margin-top: 1.5rem;
+}
+
+.block {
+  display: inline-block;
+  padding: 0.4rem 0.6rem;
+  margin-right: 0.4rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.block.pronoun { background: #4b3f72; }
+.block.verb { background: #2f6f95; }
+.block.noun { background: #3a7f5c; }
+
+/* Generator layout */
+.generator-options {
+    display: flex;
+    gap: 1em;
+    flex-wrap: 1em;
+}
+
+.generator-options label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9em;
+}
+
+/* Vocab list */
+
+.vocab-item {
+  padding: 0.6em;
+  margin-bottom: 0.4em;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
+
+/* ===================== */
+/* DARK MODE VOCAB LIST  */
+/* ===================== */
+
+.sotho-page .vocab-item {
+  background: black;
+  color: white;
+  border: 1px solid var(--accent);
+  padding: 0.6em 0.8em;
+  margin-bottom: 0.6em;
+  border-radius: 4px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
+
+/* Word-type markers (subtle) */
+.sotho-page .vocab-item.nouns { border-left: 4px solid #ffb3b3; }
+.sotho-page .vocab-item.verbs { border-left: 4px solid #ff8c8c; }
+.sotho-page .vocab-item.pronouns { border-left: 4px solid #ff9999; }
+.sotho-page .vocab-item.adjectives { border-left: 4px solid #ffc1c1; }
+.sotho-page .vocab-item.adverbs { border-left: 4px solid #ffd6d6; }
+.sotho-page .vocab-item.prepositions { border-left: 4px solid #ffe0e0; }
+
+/* Buttons inside vocab blocks */
+.sotho-page .vocab-item button {
+  background: none;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.25em 0.6em;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.sotho-page .vocab-item button:hover {
+  background: var(--accent);
+  color: black;
+}
+
+
+/* Color coding
+.vocab-item.nouns { background: #fff0f0; }
+.vocab-item.verbs { background: #ffe6e6; }
+.vocab-item.pronouns { background: #ffecec; }
+.vocab-item.adjectives { background: #fff5f5; }
+.vocab-item.adverbs { background: #fff7f7; }
+.vocab-item.prepositions { background: #fff9f9; }
+
+.vocab-item button {
+  background: none;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.3em 0.6em;
+}
+
+
+/* ===================== */
+/* SOTHO PAGE THEME      */
+/* ===================== */
+
+.sotho-page {
+  --accent: rgb(255, 116, 116);
+}
+
+.sotho-page h1,
+.sotho-page h2,
+.sotho-page h3 {
+  color: var(--accent);
+}
+
+.sotho-page a {
+  color: var(--accent);
+}
+
+.sotho-page button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+}
+
+.sotho-page button:hover {
+  opacity: 0.85;
 }
