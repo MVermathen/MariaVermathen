@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeSotho Phrase Builder</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="sotho-page">
+
+    <h1>SeSotho Phrase Builder</h1>
+
+    <p>
+        Build your own vocabulary and generate simple SeSotho / English phrase blocks to help you create your own exercises to practice present tense, past tense, negation, demonstratives, and more. <br><br>
+        These are building blocks, not full sentences. You will have to create the full sentence by yourself :-). 
+    </p>
+
+    <!-- ===================== -->
+    <!-- ADD VOCABULARY        -->
+    <!-- ===================== -->
+
+    <section class="builder-section">
+        <h2>Add vocabulary</h2>
+
+        <label>
+            Word type:
+            <select id="wordType">
+                <option value="">---choose--</option>
+                <option value="noun">Noun</option>
+                <option value="verb">Verb</option>
+                <option value="pronoun">Pronoun / Person-Noun</option>
+                <option value="adjective">Adjective</option>
+                <option value="adverb">Adverb</option>
+                <option value="preposition">Preposition</option>
+            </select>
+        </label>
+
+        <!--COMMON FIELDS-->
+        <input id="stho" placeholder="SeSotho (singular / base)">
+        <input id="en" placeholder="English (singular / base)">
+
+        <!--NOUN ONLY-->
+        <div id="pluralFields" class="conditional">
+            <input id="sthoPlural" placeholder="SeSotho plural">
+            <input id="enPlural" placeholder="English plural">
+        </div>
+
+        <!--VERB ONLY-->
+        <div id="verbFields" class="conditional">
+            <input id="sthoPast" placeholder="SeSotho past">
+            <input id="enPast" placeholder="English past">
+        </div>
+
+        <button id="addWordBtn">Add word</button>
+    </section>
+
+    <p><a href="vocab.html">To saved vocab list</a></p>
+
+    <!-- ===================== -->
+    <!-- GENERATOR             -->
+    <!-- ===================== -->
+
+    <section class="builder-section">
+        <h2>Generate phrase</h2>
+
+    <div class="generator-options">
+        <label>
+            Language:
+            <select id="languageSelect">
+                <option value="">Random</option>
+                <option value="stho">SeSotho</option>
+                <option value="en">English</option>
+            </select>
+        </label>
+
+        <label>
+            Tense:
+            <select id="tenseSelect">
+                <option value="">Random</option>
+                <option value="present">Present</option>
+                <option value="past">Past</option>
+            </select>
+        </label>
+
+        <label>
+            Number: 
+            <select id="numberSelect">
+                <option value="">Random</option>
+                <option value="singular">Singular</option>
+                <option value="plural">Plural</option>
+            </select>
+        </label>
+    </div>
+
+        <button id="generateBtn">Generate</button>
+
+        <div id="output"></div>
+    </section>
+
+
+    <!---JavaScript-->
+    <script src="script.js"></script>
+</body>
+</html>
