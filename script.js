@@ -19,12 +19,13 @@ const db = new PouchDB("sesotho-vocab");
 
 let vocab = structuredClone(defaultVocab);
 let vocabDocId = "vocab"; // fixed ID
+let currentRev = null;
 
 async function loadVocab() {
     try {
         const doc = await db.get(vocabDocId);
         vocab = doc.data;
-        vocab._rev = doc._rev;
+        currentRev = doc._rev;
     }   catch (err) {
         if (err.status === 404) {
             await saveVocab(); // first-time creation
@@ -38,7 +39,8 @@ async function saveVocab() {
     try {
         const doc = {
             _id: vocabDocId,
-            data: vocab
+            data: vocab,
+            _rev: currentRev
         };
 
         const existing = await db.get(vocabDocId);

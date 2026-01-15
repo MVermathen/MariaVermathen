@@ -16,8 +16,9 @@
 <!--SCRIPT POUCH DB-->
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
 <script>
-  const container = document.getElementById("vocabList");
+document.addEventListener("DOMContentLoaded", () => {
 
+  const container = document.getElementById("vocabList");
   const db = new PouchDB("sesotho-vocab");
   const vocabDocId = "vocab";
 
@@ -72,6 +73,7 @@
   }
 
   loadVocab();
+  });
 </script>
 
 <!--SCRIPT LOCAL STORAGE-->
