@@ -53,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         div.innerHTML = `
         <span>${formatItem(item)}</span>
+        <button data-type="${type}" data-index="${index}" class="edit-btn">Edit</button>
+        <button data-type="${type}" data-index="${index}" class="delete-btn">Delete</button>
         `;
 
         container.appendChild(div);
@@ -70,10 +72,48 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   return `${item.stho} — ${item.en}`;
+}
+
+  container.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("delete-btn")) {
+    const type = e.target.dataset.type;
+    const index = Number(e.target.dataset.index);
+
+    if (!confirm("Delete this word?")) return;
+
+    const doc = await db.get(vocabDocId);
+    doc.data[type].splice(index, 1);
+    await db.put(doc);
+
+    loadVocab();
   }
 
-  loadVocab();
+  if (e.target.classList.contains("edit-btn")) {
+    const type = e.target.dataset.type;
+    const index = Number(e.target.dataset.index);
+
+    const doc = await db.get(vocabDocId);
+    const item = doc.data[type][index];
+
+    const updated = prompt(
+      "Edit as JSON:",
+      JSON.stringify(item, null, 2)
+    );
+
+     if (!updated) return;
+
+    try {
+      doc.data[type][index] = JSON.parse(updated);
+      await db.put(doc);
+      loadVocab();
+    } catch {
+      alert("Invalid JSON.");
+    }
+  }
   });
+
+  loadVocab();
+});
 </script>
 
 <!--SCRIPT LOCAL STORAGE-->
