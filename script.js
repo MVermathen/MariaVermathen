@@ -15,7 +15,29 @@ const defaultVocab = {
 // PouchDB Data Base
 // =====================
 
-const db = new PouchDB("sesotho-vocab");
+setUserBtn?.addEventListener("click", () => {
+  const value = usernameInput.value.trim();
+  if (!value) return alert("Please enter a username");
+
+  localStorage.setItem("sesotho-username", value);
+  location.reload(); // simplest reset
+});
+
+let username = localStorage.getItem("sesotho-username");
+
+const usernameInput = document.getElementById("usernameInput");
+const setUserBtn = document.getElementById("setUserBtn");
+
+if (username && usernameInput) {
+    usernameInput.value = username;
+}
+
+if (!username) {
+    alert("Please choose a username first.");
+    throw new Error("No username");
+}
+
+const db = new PouchDB(`sesotho-vocab-${username}`);
 
 let vocab = structuredClone(defaultVocab);
 let vocabDocId = "vocab"; // fixed ID
