@@ -13,6 +13,68 @@
 
 <div id="vocabList"></div>
 
+<!--SCRIPT POUCH DB-->
+<script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
+<script>
+  const container = document.getElementById("vocabList");
+
+  const db = new PouchDB("sesotho-vocab");
+  const vocabDocId = "vocab";
+
+  async function loadVocab() {
+    try {
+      const doc = await db.get(vocabDocId);
+      renderVocab(doc.data);
+    } catch (err) {
+      if (err.status = 404) {
+        container.textContent = "No vocab saved yet.";
+      } else {
+        console.error(err);
+        container.textContent = "Error loading vocab.";
+      }
+    }
+  }
+
+  function renderVocab(vocab) {
+    container.innerHTML = "";
+
+    for (const type in vocab) {
+      if (vocab[type].length === 0) continue;
+
+      const h2 = document.createElement("h2");
+      h2.textContent = type;
+      container.appendChild(h2);
+
+      vocab[type].forEach((item, index) => {
+        const div = document.createElement("div");
+        div.className = `vocab-item ${type}`;
+
+        div.innerHTML = `
+        <span>${formatItem(item)}</span>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+  }
+
+  function formatItem(item) {
+    if (item.stho_singular) {
+      return `${item.stho_singular} / ${item.stho_plural} — ${item.en_singular} / ${item.en_plural}`;
+    }
+
+    if (item.stho_present) {
+    return `${item.stho_present} / ${item.stho_past} — ${item.en_present} / ${item.en_past}`;
+  }
+
+  return `${item.stho} — ${item.en}`;
+  }
+
+  loadVocab();
+</script>
+
+<!--SCRIPT LOCAL STORAGE-->
+<!--
 <script>
 const container = document.getElementById("vocabList");
 let vocab = JSON.parse(localStorage.getItem("sothoVocab"));
@@ -87,6 +149,7 @@ function editItem(type, index) {
   }
 }
 </script>
+-->
 
 </body>
 </html>
