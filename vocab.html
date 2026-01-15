@@ -16,14 +16,14 @@
 <!--SCRIPT POUCH DB-->
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", () => {
+
   const username = localStorage.getItem("sesotho-username");
 
   if (!username) {
     alert("No username set. Go back and choose one.");
     throw new Error("No username");
   }
-
-document.addEventListener("DOMContentLoaded", () => {
 
   const container = document.getElementById("vocabList");
   const db = new PouchDB(`sesotho-vocab-${username}`);
@@ -90,7 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const doc = await db.get(vocabDocId);
     doc.data[type].splice(index, 1);
-    await db.put(doc);
+    const res = await db.put(doc);
+    doc._rev = res.rev;
 
     loadVocab();
   }
@@ -111,7 +112,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       doc.data[type][index] = JSON.parse(updated);
-      await db.put(doc);
+      const res = await db.put(doc);
+      doc._rev = res.rev;
       loadVocab();
     } catch {
       alert("Invalid JSON.");
