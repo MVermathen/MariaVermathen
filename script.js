@@ -11,11 +11,58 @@ const defaultVocab = {
     prepositions: []
 };
 
-let vocab = JSON.parse(localStorage.getItem("sothoVocab")) || structuredClone(defaultVocab);
+// =====================
+// PouchDB Data Base
+// =====================
 
-function saveVocab() {
-    localStorage.setItem("sothoVocab", JSON.stringify(vocab));
+const db = new PouchDB("sesotho-vocab");
+
+let vocab = structuredClone(defaultVocab);
+let vocabDocId = "vocab"; // fixed ID
+
+async function loadVocab() {
+    try {
+        const doc = await db.get(vocabDocId);
+        vocab = doc.data;
+        vocab._rev = doc._rev;
+    }   catch (err) {
+        if (err.status === 404) {
+            await saveVocab(); // first-time creation
+        } else {
+            console.error(err);
+        }
+    }
 }
+
+async function saveVocab() {
+    try {
+        const doc = {
+            _id: vocabDocId,
+            data: vocab
+        };
+
+        const existing = await db.get(vocabDocId);
+        doc._rev = existing._rev;
+
+        await db.put(doc);
+    }   catch (err) {
+        if (err.status === 404) {
+            await db.put({_id: vocabDocId, data: vocab});
+        } else {
+            console.error(err);
+        }
+    }
+}
+
+// =====================
+// LOCAL STORAGE VERSION (NO PouchDB)
+// =====================
+
+// let vocab = JSON.parse(localStorage.getItem("sothoVocab")) || structuredClone(defaultVocab);
+
+// function saveVocab() {
+//    localStorage.setItem("sothoVocab", JSON.stringify(vocab));
+//}
 
 // =====================
 // ELEMENT REFERENCES
@@ -214,3 +261,5 @@ function generatePhrase() {
     maybeAdd(vocab.adverbs, language, "adverb", output);
     maybeAdd(vocab.prepositions, language, "preposition", output);
 }
+
+loadVocab();
