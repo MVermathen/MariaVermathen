@@ -16,10 +16,17 @@
 <!--SCRIPT POUCH DB-->
 <script src="https://cdn.jsdelivr.net/npm/pouchdb@9.0.0/dist/pouchdb.min.js"></script>
 <script>
+  const username = localStorage.getItem("sesotho-username");
+
+  if (!username) {
+    alert("No username set. Go back and choose one.");
+    throw new Error("No username");
+  }
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const container = document.getElementById("vocabList");
-  const db = new PouchDB("sesotho-vocab");
+  const db = new PouchDB(`sesotho-vocab-${username}`);
   const vocabDocId = "vocab";
 
   async function loadVocab() {

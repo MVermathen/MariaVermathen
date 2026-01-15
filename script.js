@@ -138,44 +138,78 @@ function updateFields() {
 // ADD WORD
 // =====================
 
-function addWord() {
+async function addWord() {
     const type = wordTypeSelect.value;
 
     const stho = sthoInput.value.trim();
     const en = enInput.value.trim();
 
+    const sthoPlural = sthoPluralInput.value.trim();
+    const enPlural = enPluralInput.value.trim();
+
+    const sthoPast = sthoPastInput.value.trim();
+    const enPast = enPastInput.value.trim();
+
+// =====================
+// 1. BASIC VALIDATION
+// =====================
+
     if (!type || !stho || !en) {
-        alert("Please fill in required fields.");
+        alert("Please fill in the required fields.");
         return;
     }
+
+// =====================
+// 2. TYPE-SPECIFIC VALIDATION
+// =====================
+
+    if ((type === "noun" || type === "pronoun") && (!sthoPlural || !enPlural)) {
+        alert("Please enter plural forms.");
+        return;
+    }
+
+    if (type === "verb" && (!sthoPast || !enPast)) {
+        alert("Please enter past tense forms.");
+        return;
+    }
+
+// =====================
+// 3. ADD WORD
+// =====================
 
     if (type === "noun" || type === "pronoun") {
         vocab[type + "s"].push({
             stho_singular: stho,
-            stho_plural: sthoPluralInput.value.trim(),
+            stho_plural: sthoPlural,
             en_singular: en,
-            en_plural: enPluralInput.value.trim()
+            en_plural: enPlural
         });
     }
 
     else if (type === "verb") {
         vocab.verbs.push({
             stho_present: stho,
-            stho_past: sthoPastInput.value.trim(),
+            stho_past: en,
             en_present: en,
-            en_past: enPastInput.value.trim()
+            en_past: enPast
         });
     }
 
     else {
-        vocab[type + "s"].push({ stho, en });
+        vocab[type + "s"].push({
+            stho,
+            en
+        });
     }
 
-    saveVocab();
+// =====================
+// 4. SAVE + FEEDBACK
+// =====================
 
-    alert("Word saved!");
+await saveVocab();
 
-    clearInputs();
+alert("Word saved!");
+clearInputs();
 }
 
 // =====================
