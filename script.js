@@ -49,6 +49,7 @@ let vocabDocId = "vocab"; // fixed ID
 let currentRev = null;
 
 async function loadVocab() {
+    if (!db) return;
     try {
         const doc = await db.get(vocabDocId);
         vocab = doc.data;
@@ -73,10 +74,12 @@ async function saveVocab() {
         const existing = await db.get(vocabDocId);
         doc._rev = existing._rev;
 
-        await db.put(doc);
+        const res = await db.put(doc);
+        currentRev = res.rev;
+
     }   catch (err) {
         if (err.status === 404) {
-            await db.put({_id: vocabDocId, data: vocab});
+            const res = await db.put({_id: vocabDocId, data: vocab});
         } else {
             console.error(err);
         }
