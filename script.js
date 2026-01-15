@@ -15,29 +15,34 @@ const defaultVocab = {
 // PouchDB Data Base
 // =====================
 
-setUserBtn?.addEventListener("click", () => {
+const usernameInput = document.getElementById("usernameInput");
+const setUserBtn = document.getElementById("setUserBtn");
+
+setUserBtn.addEventListener("click", () => {
   const value = usernameInput.value.trim();
   if (!value) return alert("Please enter a username");
 
   localStorage.setItem("sesotho-username", value);
-  location.reload(); // simplest reset
+  initUsername(); // initialise DB and load vocab
+  alert(`Username set: ${value}`);
 });
 
 let username = localStorage.getItem("sesotho-username");
-
-const usernameInput = document.getElementById("usernameInput");
-const setUserBtn = document.getElementById("setUserBtn");
 
 if (username && usernameInput) {
     usernameInput.value = username;
 }
 
-if (!username) {
-    alert("Please choose a username first.");
-    throw new Error("No username");
-}
+let db = null; // DB will be created after username is set
 
-const db = new PouchDB(`sesotho-vocab-${username}`);
+function initUsername() {
+    username = localStorage.getItem("sesotho-username");
+    if (username) {
+        usernameInput.value = username;
+        db = new PouchDB (`sesotho-vocab-${username}`);
+        loadVocab(); 
+    }
+}
 
 let vocab = structuredClone(defaultVocab);
 let vocabDocId = "vocab"; // fixed ID
@@ -139,6 +144,7 @@ function updateFields() {
 // =====================
 
 async function addWord() {
+    if (!db) return alert("Please choose a username first!");
     const type = wordTypeSelect.value;
 
     const stho = sthoInput.value.trim();
@@ -189,7 +195,7 @@ async function addWord() {
     else if (type === "verb") {
         vocab.verbs.push({
             stho_present: stho,
-            stho_past: en,
+            stho_past: sthoPast,
             en_present: en,
             en_past: enPast
         });
@@ -320,4 +326,5 @@ function generatePhrase() {
     maybeAdd(vocab.prepositions, language, "preposition", output);
 }
 
-loadVocab();
+updateFields();
+initUsername();
