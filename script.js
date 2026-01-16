@@ -37,11 +37,15 @@ let db = null; // DB will be created after username is set
 
 function initUsername() {
     username = localStorage.getItem("sesotho-username");
-    if (username) {
+    if (!username) return;
+    if (usernameInput) {
         usernameInput.value = username;
-        db = new PouchDB (`sesotho-vocab-${username}`);
-        loadVocab(); 
     }
+
+    vocab = structuredClone(defaultVocab);
+    currentRev = null;
+    db = new PouchDB (`sesotho-vocab-${username}`);
+        loadVocab(); 
 }
 
 let vocab = structuredClone(defaultVocab);
@@ -85,16 +89,6 @@ async function saveVocab() {
         }
     }
 }
-
-// =====================
-// LOCAL STORAGE VERSION (NO PouchDB)
-// =====================
-
-// let vocab = JSON.parse(localStorage.getItem("sothoVocab")) || structuredClone(defaultVocab);
-
-// function saveVocab() {
-//    localStorage.setItem("sothoVocab", JSON.stringify(vocab));
-//}
 
 // =====================
 // ELEMENT REFERENCES
