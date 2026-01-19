@@ -46,8 +46,8 @@ function initUsername() {
     currentRev = null;
     db = new PouchDB (`sesotho-vocab-${username}`);
 
-        startSync();
         loadVocab(); 
+        startSync();
 }
 
 let vocab = structuredClone(defaultVocab);
@@ -98,7 +98,13 @@ async function saveVocab() {
 
 function startSync() {
     const remoteDb = new PouchDB(
-        `http://localhost:5984/sesotho-vocab-${username}`
+        `http://localhost:5984/sesotho-vocab-${username}`,
+        {
+            auth: {
+                username: "maria",
+                password: "Majo-4147"
+            }
+        }
     );
 
     db.sync(remoteDb, {
