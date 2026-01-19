@@ -45,6 +45,8 @@ function initUsername() {
     vocab = structuredClone(defaultVocab);
     currentRev = null;
     db = new PouchDB (`sesotho-vocab-${username}`);
+
+        startSync();
         loadVocab(); 
 }
 
@@ -88,6 +90,34 @@ async function saveVocab() {
             console.error(err);
         }
     }
+}
+
+// =====================
+// SYNC
+// =====================
+
+function startSync() {
+    const remoteDb = new PouchDB(
+        `http://localhost:5984/sesotho-vocab-${username}`
+    );
+
+    db.sync(remoteDb, {
+        live: true, 
+        retry: true
+    })
+    .on("change", info => {
+        console.log("🔄 Sync change", info);
+        loadVocab(); // refresh UI 
+    })
+    .on("paused", () => {
+        console.log("⏸ Sync paused (offline?)");
+    })
+    .on("active", () => {
+        console.log("▶ Sync active");
+    })
+    .on("error", err => {
+        console.error("❌ Sync error", err);
+    });
 }
 
 // =====================
