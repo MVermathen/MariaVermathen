@@ -12,6 +12,15 @@ const defaultVocab = {
 };
 
 // =====================
+// REMOTE COUCHDB SETUP
+// =====================
+
+const remoteDB = new PouchDB(
+    "https://replicator:replicator-pass@sesotho-couchdb.fly.dev/sesotho_vocab",
+    { skip_setup: true }
+);
+
+// =====================
 // PouchDB Data Base
 // =====================
 
@@ -38,20 +47,23 @@ let db = null; // DB will be created after username is set
 function initUsername() {
     username = localStorage.getItem("sesotho-username");
     if (!username) return;
+
+    vocabDocId = `vocab:${username}`;
+
     if (usernameInput) {
         usernameInput.value = username;
     }
 
     vocab = structuredClone(defaultVocab);
     currentRev = null;
-    db = new PouchDB (`sesotho-vocab-${username}`);
+    db = new PouchDB ("sesotho_vocab_local");
 
         loadVocab(); 
         startSync();
 }
 
 let vocab = structuredClone(defaultVocab);
-let vocabDocId = "vocab"; // fixed ID
+let vocabDocId = null; // set after username
 let currentRev = null;
 
 async function loadVocab() {
@@ -97,16 +109,6 @@ async function saveVocab() {
 // =====================
 
 function startSync() {
-    const remoteDb = new PouchDB(
-        `http://localhost:5984/sesotho-vocab-${username}`,
-        {
-            auth: {
-                username: "maria",
-                password: "Majo-4147"
-            }
-        }
-    );
-
     db.sync(remoteDb, {
         live: true, 
         retry: true
