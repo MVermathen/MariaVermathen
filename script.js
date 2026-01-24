@@ -56,7 +56,7 @@ function initUsername() {
 
     vocab = structuredClone(defaultVocab);
     currentRev = null;
-    db = new PouchDB ("sesotho_vocab_local");
+    db = new PouchDB (`sesotho_vocab_local_${username}`);
 
         loadVocab(); 
         startSync();
@@ -72,6 +72,7 @@ async function loadVocab() {
         const doc = await db.get(vocabDocId);
         vocab = doc.data;
         currentRev = doc._rev;
+        renderVocabList();
     }   catch (err) {
         if (err.status === 404) {
             await saveVocab(); // first-time creation
@@ -88,9 +89,6 @@ async function saveVocab() {
             data: vocab,
             _rev: currentRev
         };
-
-        const existing = await db.get(vocabDocId);
-        doc._rev = existing._rev;
 
         const res = await db.put(doc);
         currentRev = res.rev;
@@ -109,7 +107,7 @@ async function saveVocab() {
 // =====================
 
 function startSync() {
-    db.sync(remoteDb, {
+    db.sync(remoteDB, {
         live: true, 
         retry: true
     })
