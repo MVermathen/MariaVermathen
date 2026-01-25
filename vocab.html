@@ -26,8 +26,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const container = document.getElementById("vocabList");
-  const db = new PouchDB(`sesotho-vocab-${username}`);
-  const vocabDocId = "vocab";
+  const db = new PouchDB(`sesotho_vocab_local_${username}`);
+  const vocabDocId = `vocab:${username}`;
 
   async function loadVocab() {
     try {
