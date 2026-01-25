@@ -361,3 +361,7 @@ function generatePhrase() {
 
 updateFields();
 initUsername();
+
+function renderVocabList() {
+  console.log("Current vocab:", vocab);
+}
