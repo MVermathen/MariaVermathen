@@ -16,7 +16,7 @@ const defaultVocab = {
 // =====================
 
 const remoteDB = new PouchDB(
-    "https://replicator:replicator-pass@sesotho-couchdb.fly.dev/sesotho_vocab",
+    "https://admin:Majo-4147@sesotho-couchdb.fly.dev/sesotho_vocab",
     { skip_setup: true }
 );
 
@@ -75,7 +75,10 @@ async function loadVocab() {
         renderVocabList();
     }   catch (err) {
         if (err.status === 404) {
-            await saveVocab(); // first-time creation
+            console.log("📂 Vocab doc not found. Creating new doc...");
+            await db.put({_id: vocabDocId, data: vocab}); // first-time creation
+            currentRev = (await db.get(vocabDocId))._rev;
+            renderVocabList();
         } else {
             console.error(err);
         }
@@ -83,22 +86,19 @@ async function loadVocab() {
 }
 
 async function saveVocab() {
+    if (!db) return;
     try {
         const doc = {
             _id: vocabDocId,
             data: vocab,
-            _rev: currentRev
+            _rev: currentRev || undefined 
         };
 
         const res = await db.put(doc);
         currentRev = res.rev;
-
+        console.log("💾 Vocab saved. Current rev:", currentRev);
     }   catch (err) {
-        if (err.status === 404) {
-            const res = await db.put({_id: vocabDocId, data: vocab});
-        } else {
-            console.error(err);
-        }
+            console.error("❌ Error saving vocab:", err);
     }
 }
 
