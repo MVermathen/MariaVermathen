@@ -15,6 +15,8 @@ const defaultVocab = {
 // REMOTE COUCHDB SETUP
 // =====================
 
+const COUCH_URL = "https://sesotho-couchdb.fly.dev/sesotho_vocab";
+
 const remoteDB = new PouchDB(
     "https://admin:Majo-4147@sesotho-couchdb.fly.dev/sesotho_vocab",
     { skip_setup: true }
