@@ -17,10 +17,20 @@ const defaultVocab = {
 
 const COUCH_URL = "https://sesotho-couchdb.fly.dev/sesotho_vocab";
 
-const remoteDB = new PouchDB(
-    "https://admin:Majo-4147@sesotho-couchdb.fly.dev/sesotho_vocab",
-    { skip_setup: true }
-);
+const remoteDB = new PouchDB(COUCH_URL, {
+    skip_setup: true
+});
+
+// =====================
+// DEVICE ID (GLOBAL)
+// =====================
+
+let deviceId = localStorage.getItem("sesotho-device-id");
+
+if (!deviceId) {
+    deviceId = crypto.randomUUID();
+    localStorage.setItem("sesotho-device-id", deviceId);
+}
 
 // =====================
 // PouchDB Data Base
@@ -72,15 +82,30 @@ async function loadVocab() {
     if (!db) return;
     try {
         const doc = await db.get(vocabDocId);
+
+        // 🔒 CHECK OWNER
+        if (doc.owner && doc.owner !==deviceId) {
+            alert("This username is already used on another device.");
+        }
+
         vocab = doc.data;
         currentRev = doc._rev;
         renderVocabList();
+
     }   catch (err) {
         if (err.status === 404) {
             console.log("📂 Vocab doc not found. Creating new doc...");
-            await db.put({_id: vocabDocId, data: vocab}); // first-time creation
-            currentRev = (await db.get(vocabDocId))._rev;
+
+            const newDoc = {
+                _id: vocabDocId,
+                owners: [deviceId],
+                data: vocab
+            };
+
+            const res = await db.put(newDoc); // first-time creation
+            currentRev = res._rev;
             renderVocabList();
+
         } else {
             console.error(err);
         }
@@ -89,18 +114,38 @@ async function loadVocab() {
 
 async function saveVocab() {
     if (!db) return;
-    try {
-        const doc = {
-            _id: vocabDocId,
-            data: vocab,
-            _rev: currentRev || undefined 
-        };
 
-        const res = await db.put(doc);
+    try {
+        const doc = await db.get(vocabDocId);
+
+        // ✅ Allow multiple devices
+        if (!doc.owners) {
+            doc.owners = [deviceId];
+            await db.put(doc);
+        } else if (!doc.owners.includes(deviceId)) {
+            doc.owners.push(deviceId);
+            await db.put(doc);
+        }
+
+        vocab = doc.data;
+        currentRev = doc._rev;
+        renderVocabList();
+
+    } catch (err) {
+        if (err.status === 404) {
+            const newDoc = {
+                _id: vocabDocId,
+                owners: [deviceId],
+                data: vocab
+            };
+
+        const res = await db.put(newDoc);
         currentRev = res.rev;
-        console.log("💾 Vocab saved. Current rev:", currentRev);
-    }   catch (err) {
-            console.error("❌ Error saving vocab:", err);
+        renderVocabList();
+
+        } else {
+            console.error(err);
+        }
     }
 }
 
